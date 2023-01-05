@@ -48,6 +48,17 @@ namespace Lockstep.Logging {
         
         static StringBuilder _logBuffer = new StringBuilder(); 
         public static void DefaultServerLogHandler(object sernder, LogEventArgs logArgs){
+#if UNITY_EDITOR
+            switch (logArgs.LogSeverity)
+            {
+                case LogSeverity.Error:
+                case LogSeverity.Exception:
+                    UnityEngine.Debug.LogError(logArgs.Message);
+                    return;
+            }
+            UnityEngine.Debug.Log(logArgs.Message);
+            return;
+#endif
             if ((LogSeverity.Error & logArgs.LogSeverity) != 0
                 || (LogSeverity.Exception & logArgs.LogSeverity) != 0
             ) {
